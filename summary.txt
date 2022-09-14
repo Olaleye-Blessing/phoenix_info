@@ -1,0 +1,2 @@
+Plug
+A plug is a function that accepts a %Plug.Conn{} as first argument and connection options as second argument. It returns a %Plug.Conn{}.
