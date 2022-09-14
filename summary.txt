@@ -1,2 +1,11 @@
 Plug
 A plug is a function that accepts a %Plug.Conn{} as first argument and connection options as second argument. It returns a %Plug.Conn{}.
+
+- Controllers plugs provide a feature that allows us to execute plugs only within certain actions.
+
+---------------------------------------------------------------------------------------
+defmodule HelloWeb.PageController do
+  use HelloWeb, :controller
+
+  plug HelloWeb.Plugs.Locale, "en" when action in [:index]
+---------------------------------------------------------------------------------------
