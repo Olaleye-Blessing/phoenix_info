@@ -9,3 +9,59 @@ defmodule HelloWeb.PageController do
 
   plug HelloWeb.Plugs.Locale, "en" when action in [:index]
 ---------------------------------------------------------------------------------------
+=======================================================================================
+
+Routing
+---------------------------------------------------------------------------------------
+scope "/", HelloWeb do
+  pipe_through :browser
+
+  get "/", PageController, :index
+
+  get "/hello", HelloController, :index
+  get "/hello/:messenger", HelloController, :show
+end
+-----------------------------------------------------------------------------------------
+
+Running `mix phx.routes` will show us the routes that we have defined.
+  page_path     GET           /                    HelloWeb.PageController :index
+  hello_path    GET           /hello               HelloWeb.HelloController :index
+  hello_path    GET           /hello/:messenger    HelloWeb.HelloController :show
+
+page_path is an exmaple of what phoenix calls a path helper.
+
+scope "/", HelloWeb do
+  resources "/users", UserController
+end
+
+resources will generate the following routes:
+  - user_path  GET     /users           HelloWeb.UserController :index
+  - user_path  GET     /users/:id/edit  HelloWeb.UserController :edit
+  - user_path  GET     /users/new       HelloWeb.UserController :new
+  - user_path  GET     /users/:id       HelloWeb.UserController :show
+  - user_path  POST    /users           HelloWeb.UserController :create
+  - user_path  PATCH   /users/:id       HelloWeb.UserController :update
+           PUT     /users/:id       HelloWeb.UserController :update
+  - user_path  DELETE  /users/:id       HelloWeb.UserController :delete
+
+we can be selective using the :only and :except options to filter specific actions.
+  scope "/", HelloWeb do
+    resources "/posts", PostController, only: [:index, :show]
+  end
+
+Running `mix phx.routes` will show us:
+  post_path  GET     /posts      HelloWeb.PostController :index
+  post_path  GET     /posts/:id  HelloWeb.PostController :show
+==================================================================================================
+
+Path helpers
+Path helpers are dynamically defined functions. They allow us to retrieve the path corresponding to a given controller-action pair. The name of each path helper is derived from the name of the controller used in the route definition.
+
+-------------------------------------------------------------------------------------------------
+get "/hello", HelloController, :index
+-------------------------------------------------------------------------------------------------
+The path helper for this route is hello_path/2. The first argument is the connection struct, and the second argument is the action parameter.
+This path helper could be used in the template as follows:
+-------------------------------------------------------------------------------------------------
+<%= link "Hello", to: Routes.hello_path(@conn, :index) %>
+-------------------------------------------------------------------------------------------------
